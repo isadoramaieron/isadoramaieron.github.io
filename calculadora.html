@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculadora QR — Nutrição Enteral</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 2rem 1rem;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: var(--bg-card);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      padding: 2rem;
+      width: 100%;
+      max-width: 700px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 0 60px rgba(46, 139, 87, 0.08);
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      margin-bottom: 1.2rem;
+      transition: color 0.2s;
+    }
+
+    .back-link:hover { color: var(--gold); }
+
+    h1 {
+      font-family: var(--font-display);
+      font-size: clamp(1.2rem, 3vw, 1.5rem);
+      font-weight: 600;
+      color: var(--gold);
+      margin-bottom: 4px;
+    }
+
+    .subtitle {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      margin-bottom: 1.75rem;
+    }
+
+    .input-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 1rem;
+    }
+
+    @media (max-width: 520px) {
+      .input-row { grid-template-columns: 1fr; }
+    }
+
+    .field { display: flex; flex-direction: column; gap: 6px; }
+
+    label {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .vol-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .vol-wrap input { flex: 1; }
+
+    .vol-unit {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      white-space: nowrap;
+    }
+
+    input[type="number"],
+    select {
+      width: 100%;
+      height: 40px;
+      padding: 0 12px;
+      font-size: 0.85rem;
+      border: 1px solid var(--jade-dark);
+      border-radius: 8px;
+      background: rgba(10, 26, 15, 0.6);
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      font-family: var(--font-body);
+    }
+
+    select { cursor: pointer; }
+    select option { background: var(--bg-card-solid); color: var(--text); }
+
+    input[type="number"]:focus,
+    select:focus {
+      border-color: var(--jade);
+      box-shadow: 0 0 0 3px rgba(46, 139, 87, 0.15);
+    }
+
+    .formula-desc {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      min-height: 16px;
+    }
+
+    .btn-calc {
+      width: 100%;
+      padding: 11px;
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      border-radius: 8px;
+      border: 1px solid var(--gold-soft);
+      background: var(--gold-faint);
+      color: var(--gold);
+      transition: all 0.2s;
+      font-family: var(--font-body);
+    }
+
+    .btn-calc:hover {
+      background: var(--gold);
+      color: var(--bg-deep);
+      border-color: var(--gold);
+    }
+
+    .btn-calc:active { transform: scale(0.99); }
+
+    .results {
+      margin-top: 1.75rem;
+      border-top: 1px solid var(--border);
+      padding-top: 1.5rem;
+    }
+
+    .qr-display {
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      padding: 1.25rem 1.5rem;
+      background: rgba(10, 26, 15, 0.5);
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+
+    @media (max-width: 480px) {
+      .qr-display {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.75rem;
+        padding: 1rem;
+      }
+    }
+
+    .qr-big {
+      font-size: clamp(2.5rem, 8vw, 3.2rem);
+      font-weight: 500;
+      line-height: 1;
+      font-family: var(--font-display);
+    }
+
+    .qr-info-title {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .qr-tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      padding: 3px 10px;
+      border-radius: 6px;
+      margin-bottom: 4px;
+    }
+
+    .qr-interp {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 10px;
+      margin-bottom: 1.25rem;
+    }
+
+    .metric {
+      background: rgba(10, 26, 15, 0.5);
+      border: 1px solid rgba(46, 139, 87, 0.15);
+      border-radius: 8px;
+      padding: 12px 14px;
+    }
+
+    .metric-label {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      margin-bottom: 4px;
+    }
+
+    .metric-value {
+      font-size: 1.35rem;
+      font-weight: 500;
+      color: var(--text);
+      font-family: var(--font-display);
+    }
+
+    .metric-unit {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+    }
+
+    .card-detail {
+      background: rgba(10, 26, 15, 0.5);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .card-title {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+    }
+
+    thead th {
+      text-align: left;
+      color: var(--text-dim);
+      font-weight: 500;
+      padding: 6px 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    tbody td {
+      padding: 7px 8px;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.08);
+      color: var(--text);
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+      font-weight: 500;
+      color: var(--gold);
+    }
+
+    .didactic-box {
+      background: rgba(46, 139, 87, 0.08);
+      border-left: 3px solid var(--jade);
+      border-radius: 0 12px 12px 0;
+      padding: 1.25rem 1.5rem;
+    }
+
+    .didactic-title {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--jade-light);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .step { margin-bottom: 1.25rem; }
+    .step:last-child { margin-bottom: 0; }
+
+    .step-header {
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+    }
+
+    .step-formula {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.8rem;
+      background: rgba(10, 26, 15, 0.5);
+      border: 1px solid rgba(46, 139, 87, 0.2);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: var(--text);
+      white-space: pre-wrap;
+      line-height: 1.8;
+    }
+
+    .step-result {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    .step-result strong { color: var(--text); }
+
+    .divider {
+      border: none;
+      border-top: 1px dashed rgba(46, 139, 87, 0.2);
+      margin: 1rem 0;
+    }
+
+    footer {
+      margin-top: 1.5rem;
+      font-size: 0.68rem;
+      color: var(--text-dim);
+      text-align: center;
+      opacity: 0.7;
+    }
+
+    @media (max-width: 480px) {
+      .container { padding: 1.2rem; }
+      .didactic-box { padding: 1rem; }
+      table { font-size: 0.72rem; }
+      thead th, tbody td { padding: 5px 4px; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <a href="index.html" class="back-link">← Voltar</a>
+
+  <h1>Calculadora de QR — Nutrição Enteral</h1>
+  <p class="subtitle">Quociente Respiratório estimado a partir da composição da fórmula</p>
+
+  <div class="input-row">
+    <div class="field">
+      <label for="volume">Volume infundido em 24h</label>
+      <div class="vol-wrap">
+        <input type="number" id="volume" placeholder="ex: 2300" min="0" max="5000" />
+        <span class="vol-unit">ml/24h</span>
+      </div>
+    </div>
+    <div class="field">
+      <label for="formula">Fórmula enteral</label>
+      <select id="formula">
+        <option value="">— selecione —</option>
+        <option value="novasource_hp">Novasource HP (1,5 kcal/ml)</option>
+        <option value="novasource_gc">Novasource GC (1,0 kcal/ml)</option>
+        <option value="nutrison_protein">Nutrison Protein Plus (1,25 kcal/ml)</option>
+        <option value="fresubin_hp">Fresubin HP Energy (1,5 kcal/ml)</option>
+        <option value="isosource_15">Isosource 1.5 (1,5 kcal/ml)</option>
+        <option value="osmolite">Osmolite 1.5 (1,5 kcal/ml)</option>
+        <option value="jevity">Jevity 1.0 (1,0 kcal/ml)</option>
+        <option value="pulmocare">Pulmocare (1,5 kcal/ml)</option>
+      </select>
+      <div class="formula-desc" id="formula-desc"></div>
+    </div>
+  </div>
+
+  <button class="btn-calc" onclick="calcular()">✓ Calcular QR</button>
+
+  <div class="results hidden" id="results">
+
+    <div class="qr-display">
+      <div class="qr-big" id="qr-valor"></div>
+      <div>
+        <div class="qr-info-title">Quociente Respiratório</div>
+        <div><span class="qr-tag" id="qr-tag"></span></div>
+        <div class="qr-interp" id="qr-interp"></div>
+      </div>
+    </div>
+
+    <div class="metrics" id="metrics-grid"></div>
+
+    <div class="card-detail">
+      <div class="card-title">Detalhamento por substrato</div>
+      <table id="detail-table"></table>
+    </div>
+
+    <div class="didactic-box">
+      <div class="didactic-title">
+        📚 Como chegamos nesse resultado — passo a passo
+      </div>
+      <div id="didactic-steps"></div>
+    </div>
+
+  </div>
+
+  <footer>Cálculo baseado nos fatores de oxidação de Weir. Uso exclusivamente didático/clínico de apoio.</footer>
+</div>
+
+<script>
+  const formulas = {
+    novasource_hp:    { nome: "Novasource HP",          kcal: 1.5,  cho: 17.0, ptn: 8.3,  lip: 4.9,  desc: "Polimérica hiperproteica — 1,5 kcal/ml" },
+    novasource_gc:    { nome: "Novasource GC",          kcal: 1.0,  cho: 12.5, ptn: 6.25, lip: 3.4,  desc: "Polimérica padrão — 1,0 kcal/ml" },
+    nutrison_protein: { nome: "Nutrison Protein Plus",  kcal: 1.25, cho: 12.3, ptn: 7.5,  lip: 4.9,  desc: "Hiperproteica — 1,25 kcal/ml" },
+    fresubin_hp:      { nome: "Fresubin HP Energy",     kcal: 1.5,  cho: 17.0, ptn: 7.5,  lip: 5.8,  desc: "Hiperproteica hipercalórica — 1,5 kcal/ml" },
+    isosource_15:     { nome: "Isosource 1.5",          kcal: 1.5,  cho: 19.0, ptn: 6.8,  lip: 5.0,  desc: "Polimérica — 1,5 kcal/ml" },
+    osmolite:         { nome: "Osmolite 1.5",           kcal: 1.5,  cho: 20.3, ptn: 6.3,  lip: 4.9,  desc: "Polimérica isoosmolar — 1,5 kcal/ml" },
+    jevity:           { nome: "Jevity 1.0",             kcal: 1.0,  cho: 14.4, ptn: 4.4,  lip: 3.4,  desc: "Polimérica com fibras — 1,0 kcal/ml" },
+    pulmocare:        { nome: "Pulmocare",              kcal: 1.5,  cho: 10.6, ptn: 6.3,  lip: 9.2,  desc: "Fórmula pulmonar — alto teor lipídico" },
+  };
+
+  document.getElementById('formula').addEventListener('change', function () {
+    const f = formulas[this.value];
+    document.getElementById('formula-desc').textContent = f ? f.desc : '';
+  });
+
+  function fmt(n, dec = 1) { return Number(n).toFixed(dec); }
+
+  function calcular() {
+    const vol = parseFloat(document.getElementById('volume').value);
+    const fKey = document.getElementById('formula').value;
+    if (!vol || !fKey) { alert('Preencha o volume e selecione a fórmula.'); return; }
+
+    const f = formulas[fKey];
+    const mult = vol / 100;
+
+    const cho_g = f.cho * mult;
+    const ptn_g = f.ptn * mult;
+    const lip_g = f.lip * mult;
+
+    const cho_kcal = cho_g * 4;
+    const ptn_kcal = ptn_g * 4;
+    const lip_kcal = lip_g * 9;
+    const total_kcal = cho_kcal + ptn_kcal + lip_kcal;
+
+    const vco2_cho = cho_g * 0.746;
+    const vco2_ptn = ptn_g * 0.550;
+    const vco2_lip = lip_g * 1.427;
+    const vco2 = vco2_cho + vco2_ptn + vco2_lip;
+
+    const vo2_cho = cho_g * 0.746;
+    const vo2_ptn = ptn_g * 0.684;
+    const vo2_lip = lip_g * 2.019;
+    const vo2 = vo2_cho + vo2_ptn + vo2_lip;
+
+    const qr = vco2 / vo2;
+
+    let cor, tag, interp;
+    if (qr < 0.7)        { cor = '#E24B4A'; tag = 'Cetogênese / jejum prolongado';     interp = 'Oxidação incompleta — avaliar aporte calórico.'; }
+    else if (qr < 0.80)  { cor = '#EF9F27'; tag = 'Oxidação predominante de gordura';  interp = 'Abaixo do ideal — considerar aumentar aporte calórico.'; }
+    else if (qr <= 0.85) { cor = '#1D9E75'; tag = 'Ideal ✓';                           interp = 'Oxidação mista equilibrada — faixa ideal para NE.'; }
+    else if (qr <= 1.0)  { cor = '#EF9F27'; tag = 'Leve excesso de carboidratos';      interp = 'Monitorar em pacientes com insuficiência respiratória.'; }
+    else                  { cor = '#E24B4A'; tag = 'Overfeeding / lipogênese ⚠️';       interp = 'QR > 1,0 — excesso calórico com produção aumentada de CO₂.'; }
+
+    document.getElementById('qr-valor').textContent = qr.toFixed(3);
+    document.getElementById('qr-valor').style.color = cor;
+    const tagEl = document.getElementById('qr-tag');
+    tagEl.textContent = tag;
+    tagEl.style.background = cor + '22';
+    tagEl.style.color = cor;
+    document.getElementById('qr-interp').textContent = interp;
+
+    document.getElementById('metrics-grid').innerHTML = `
+      <div class="metric"><div class="metric-label">Calorias totais</div><div class="metric-value">${Math.round(total_kcal)}</div><div class="metric-unit">kcal/24h</div></div>
+      <div class="metric"><div class="metric-label">Proteína total</div><div class="metric-value">${fmt(ptn_g)}</div><div class="metric-unit">g/24h</div></div>
+      <div class="metric"><div class="metric-label">VCO₂ estimado</div><div class="metric-value">${fmt(vco2)}</div><div class="metric-unit">L/24h</div></div>
+      <div class="metric"><div class="metric-label">VO₂ estimado</div><div class="metric-value">${fmt(vo2)}</div><div class="metric-unit">L/24h</div></div>
+    `;
+
+    document.getElementById('detail-table').innerHTML = `
+      <thead><tr><th>Substrato</th><th>Quantidade</th><th>VCO₂ (L)</th><th>VO₂ (L)</th><th>Kcal</th></tr></thead>
+      <tbody>
+        <tr><td>Carboidrato</td><td>${fmt(cho_g)} g</td><td>${fmt(vco2_cho)}</td><td>${fmt(vo2_cho)}</td><td>${Math.round(cho_kcal)}</td></tr>
+        <tr><td>Proteína</td><td>${fmt(ptn_g)} g</td><td>${fmt(vco2_ptn)}</td><td>${fmt(vo2_ptn)}</td><td>${Math.round(ptn_kcal)}</td></tr>
+        <tr><td>Lipídio</td><td>${fmt(lip_g)} g</td><td>${fmt(vco2_lip)}</td><td>${fmt(vo2_lip)}</td><td>${Math.round(lip_kcal)}</td></tr>
+        <tr><td>Total</td><td>—</td><td>${fmt(vco2)}</td><td>${fmt(vo2)}</td><td>${Math.round(total_kcal)}</td></tr>
+      </tbody>
+    `;
+
+    document.getElementById('didactic-steps').innerHTML = `
+      <div class="step">
+        <div class="step-header">Passo 1 — composição da fórmula por 100 ml (${f.nome})</div>
+        <div class="step-formula">CHO:  ${fmt(f.cho)} g/100ml\nPTN:  ${fmt(f.ptn)} g/100ml\nLIP:  ${fmt(f.lip)} g/100ml\nDensidade: ${f.kcal} kcal/ml</div>
+      </div>
+      <hr class="divider">
+      <div class="step">
+        <div class="step-header">Passo 2 — quantidade total infundida em ${Math.round(vol)} ml</div>
+        <div class="step-formula">Multiplicador = ${Math.round(vol)} ml ÷ 100 = ${fmt(mult)}\n\nCHO = ${fmt(f.cho)} × ${fmt(mult)} = ${fmt(cho_g)} g\nPTN = ${fmt(f.ptn)} × ${fmt(mult)} = ${fmt(ptn_g)} g\nLIP = ${fmt(f.lip)} × ${fmt(mult)} = ${fmt(lip_g)} g</div>
+      </div>
+      <hr class="divider">
+      <div class="step">
+        <div class="step-header">Passo 3 — calorias por macronutriente</div>
+        <div class="step-formula">CHO: ${fmt(cho_g)} g × 4 kcal/g = ${Math.round(cho_kcal)} kcal\nPTN: ${fmt(ptn_g)} g × 4 kcal/g = ${Math.round(ptn_kcal)} kcal\nLIP: ${fmt(lip_g)} g × 9 kcal/g = ${Math.round(lip_kcal)} kcal\n─────────────────────────────\nTotal:                  ${Math.round(total_kcal)} kcal</div>
+      </div>
+      <hr class="divider">
+      <div class="step">
+        <div class="step-header">Passo 4 — VCO₂ produzido por substrato (fatores de Weir)</div>
+        <div class="step-formula">Fatores: CHO = 0,746 L/g | PTN = 0,550 L/g | LIP = 1,427 L/g\n\nCHO: ${fmt(cho_g)} × 0,746 = ${fmt(vco2_cho)} L\nPTN: ${fmt(ptn_g)} × 0,550 = ${fmt(vco2_ptn)} L\nLIP: ${fmt(lip_g)} × 1,427 = ${fmt(vco2_lip)} L\n─────────────────────────────\nVCO₂ total:         ${fmt(vco2)} L</div>
+      </div>
+      <hr class="divider">
+      <div class="step">
+        <div class="step-header">Passo 5 — VO₂ consumido por substrato</div>
+        <div class="step-formula">Fatores: CHO = 0,746 L/g | PTN = 0,684 L/g | LIP = 2,019 L/g\n\nCHO: ${fmt(cho_g)} × 0,746 = ${fmt(vo2_cho)} L\nPTN: ${fmt(ptn_g)} × 0,684 = ${fmt(vo2_ptn)} L\nLIP: ${fmt(lip_g)} × 2,019 = ${fmt(vo2_lip)} L\n─────────────────────────────\nVO₂ total:          ${fmt(vo2)} L</div>
+      </div>
+      <hr class="divider">
+      <div class="step">
+        <div class="step-header">Passo 6 — Quociente Respiratório final</div>
+        <div class="step-formula">QR = VCO₂ ÷ VO₂\nQR = ${fmt(vco2)} ÷ ${fmt(vo2)}\nQR = ${qr.toFixed(3)}</div>
+        <div class="step-result">Interpretação: <strong>${tag}</strong> — ${interp}</div>
+      </div>
+    `;
+
+    document.getElementById('results').classList.remove('hidden');
+    document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+</script>
+</body>
+</html>
