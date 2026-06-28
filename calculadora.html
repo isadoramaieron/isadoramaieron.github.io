@@ -12,9 +12,62 @@
       justify-content: center;
       padding: 2rem 1rem;
       min-height: 100vh;
+      position: relative;
     }
 
-    .container {
+    .bg-sparkles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .sparkle {
+      position: absolute;
+      color: var(--gold);
+      animation: float 8s ease-in-out infinite, twinkle 3s ease-in-out infinite;
+    }
+
+    .sparkle--jade { color: var(--jade-light); }
+    .sparkle--md { font-size: 18px; }
+    .sparkle--sm { font-size: 11px; }
+    .sparkle--xs { font-size: 7px; }
+
+    .dot {
+      position: absolute;
+      border-radius: 50%;
+      animation: float 10s ease-in-out infinite, pulse 4s ease-in-out infinite;
+    }
+
+    .dot--gold {
+      background: var(--gold);
+      box-shadow: 0 0 8px var(--gold), 0 0 20px rgba(212, 175, 55, 0.3);
+    }
+
+    .dot--jade {
+      background: var(--jade-light);
+      box-shadow: 0 0 8px var(--jade-light), 0 0 20px rgba(126, 190, 160, 0.3);
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) translateX(0); }
+      25% { transform: translateY(-8px) translateX(3px); }
+      50% { transform: translateY(-4px) translateX(-3px); }
+      75% { transform: translateY(-12px) translateX(2px); }
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: var(--base-opacity, 0.6); }
+      50% { opacity: calc(var(--base-opacity, 0.6) * 0.3); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: var(--base-opacity, 0.5); transform: scale(1); }
+      50% { opacity: calc(var(--base-opacity, 0.5) * 0.4); transform: scale(0.7); }
+    }
+
+    .container { z-index: 1; position: relative;
       background: var(--bg-card);
       border-radius: 16px;
       border: 1px solid var(--border);
@@ -336,6 +389,21 @@
   </style>
 </head>
 <body>
+
+<div class="bg-sparkles">
+  <span class="sparkle sparkle--md" style="top:5%;left:5%;--base-opacity:0.5;animation-delay:0s,0.5s">✦</span>
+  <span class="sparkle sparkle--sm" style="top:15%;left:15%;--base-opacity:0.35;animation-delay:2s,1.5s">✦</span>
+  <span class="sparkle sparkle--xs" style="top:30%;left:3%;--base-opacity:0.3;animation-delay:4s,2.5s">✦</span>
+  <span class="sparkle sparkle--md" style="top:55%;right:5%;--base-opacity:0.45;animation-delay:1s,0.8s">✦</span>
+  <span class="sparkle sparkle--sm" style="top:75%;right:12%;--base-opacity:0.35;animation-delay:3s,2s">✦</span>
+  <span class="sparkle sparkle--xs" style="top:90%;left:10%;--base-opacity:0.25;animation-delay:5s,3s">✦</span>
+  <span class="sparkle sparkle--jade sparkle--sm" style="top:40%;left:8%;--base-opacity:0.25;animation-delay:2.5s,1s">✦</span>
+  <span class="sparkle sparkle--jade sparkle--xs" style="top:65%;right:8%;--base-opacity:0.2;animation-delay:4.5s,3.5s">✦</span>
+  <span class="dot dot--gold" style="width:5px;height:5px;top:20%;right:8%;--base-opacity:0.4;animation-delay:1.5s,0s"></span>
+  <span class="dot dot--gold" style="width:4px;height:4px;top:50%;left:6%;--base-opacity:0.35;animation-delay:3.5s,2s"></span>
+  <span class="dot dot--jade" style="width:4px;height:4px;top:80%;right:15%;--base-opacity:0.25;animation-delay:0.5s,3s"></span>
+</div>
+
 <div class="container">
   <a href="index.html" class="back-link">← Voltar</a>
 

@@ -16,7 +16,84 @@
       padding: 1rem;
     }
 
+    /* ── Partículas brilhantes no fundo ── */
+
+    .bg-sparkles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .sparkle {
+      position: absolute;
+      color: var(--gold);
+      animation: float 8s ease-in-out infinite, twinkle 3s ease-in-out infinite;
+    }
+
+    .sparkle--jade { color: var(--jade-light); }
+
+    /* Estrela de 4 pontas — tamanhos */
+    .sparkle--lg { font-size: 28px; }
+    .sparkle--md { font-size: 18px; }
+    .sparkle--sm { font-size: 11px; }
+    .sparkle--xs { font-size: 7px; }
+
+    /* Pontos redondos (glow dots) */
+    .dot {
+      position: absolute;
+      border-radius: 50%;
+      animation: float 10s ease-in-out infinite, pulse 4s ease-in-out infinite;
+    }
+
+    .dot--gold {
+      background: var(--gold);
+      box-shadow: 0 0 8px var(--gold), 0 0 20px rgba(212, 175, 55, 0.3);
+    }
+
+    .dot--jade {
+      background: var(--jade-light);
+      box-shadow: 0 0 8px var(--jade-light), 0 0 20px rgba(126, 190, 160, 0.3);
+    }
+
+    .dot--warm {
+      background: #C4836A;
+      box-shadow: 0 0 6px #C4836A, 0 0 15px rgba(196, 131, 106, 0.3);
+    }
+
+    /* Linhas douradas decorativas no fundo */
+    .gold-line {
+      position: absolute;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-soft) 20%, var(--gold) 50%, var(--gold-soft) 80%, transparent);
+    }
+
+    .gold-line--v {
+      width: 1px;
+      height: auto;
+      background: linear-gradient(180deg, transparent, var(--gold-soft) 20%, var(--gold) 50%, var(--gold-soft) 80%, transparent);
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) translateX(0); }
+      25% { transform: translateY(-8px) translateX(3px); }
+      50% { transform: translateY(-4px) translateX(-3px); }
+      75% { transform: translateY(-12px) translateX(2px); }
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: var(--base-opacity, 0.6); }
+      50% { opacity: calc(var(--base-opacity, 0.6) * 0.3); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: var(--base-opacity, 0.5); transform: scale(1); }
+      50% { opacity: calc(var(--base-opacity, 0.5) * 0.4); transform: scale(0.7); }
+    }
+
     .card {
+      z-index: 1;
       position: relative;
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -39,14 +116,7 @@
       transform: translateX(-50%);
       width: 60%;
       height: 1px;
-      background: linear-gradient(
-        90deg,
-        transparent,
-        var(--gold-soft) 30%,
-        var(--gold) 50%,
-        var(--gold-soft) 70%,
-        transparent
-      );
+      background: linear-gradient(90deg, transparent, var(--gold-soft) 30%, var(--gold) 50%, var(--gold-soft) 70%, transparent);
       opacity: 0.5;
     }
 
@@ -115,18 +185,74 @@
         border-radius: 16px;
       }
 
-      .links {
-        gap: 0.8rem;
-      }
+      .links { gap: 0.8rem; }
 
       .link-btn {
         padding: 0.55rem 1rem;
         font-size: 0.8rem;
       }
+
+      .sparkle--lg { font-size: 20px; }
+      .gold-line { display: none; }
     }
   </style>
 </head>
 <body>
+
+<div class="bg-sparkles">
+  <!-- ✦ Estrelas de 4 pontas — douradas -->
+  <span class="sparkle sparkle--lg" style="top:8%;left:6%;--base-opacity:0.7;animation-delay:0s,0.5s">✦</span>
+  <span class="sparkle sparkle--md" style="top:15%;left:18%;--base-opacity:0.5;animation-delay:1.2s,0.8s">✦</span>
+  <span class="sparkle sparkle--sm" style="top:5%;left:32%;--base-opacity:0.4;animation-delay:2.5s,1.5s">✦</span>
+  <span class="sparkle sparkle--xs" style="top:22%;left:10%;--base-opacity:0.35;animation-delay:3.8s,2.2s">✦</span>
+  <span class="sparkle sparkle--md" style="top:40%;left:4%;--base-opacity:0.45;animation-delay:0.8s,1.8s">✦</span>
+  <span class="sparkle sparkle--sm" style="top:55%;left:8%;--base-opacity:0.35;animation-delay:4.5s,0.3s">✦</span>
+  <span class="sparkle sparkle--lg" style="top:70%;left:5%;--base-opacity:0.5;animation-delay:2s,2.5s">✦</span>
+  <span class="sparkle sparkle--xs" style="top:82%;left:15%;--base-opacity:0.3;animation-delay:5.2s,1.2s">✦</span>
+  <span class="sparkle sparkle--sm" style="top:90%;left:25%;--base-opacity:0.4;animation-delay:1s,3s">✦</span>
+
+  <span class="sparkle sparkle--md" style="top:6%;right:10%;--base-opacity:0.55;animation-delay:3s,0.5s">✦</span>
+  <span class="sparkle sparkle--sm" style="top:18%;right:20%;--base-opacity:0.4;animation-delay:0.5s,2s">✦</span>
+  <span class="sparkle sparkle--lg" style="top:30%;right:5%;--base-opacity:0.5;animation-delay:4s,1s">✦</span>
+  <span class="sparkle sparkle--xs" style="top:45%;right:12%;--base-opacity:0.3;animation-delay:1.8s,3.5s">✦</span>
+  <span class="sparkle sparkle--md" style="top:60%;right:7%;--base-opacity:0.45;animation-delay:2.5s,0.8s">✦</span>
+  <span class="sparkle sparkle--sm" style="top:75%;right:18%;--base-opacity:0.35;animation-delay:5s,2s">✦</span>
+  <span class="sparkle sparkle--lg" style="top:88%;right:8%;--base-opacity:0.55;animation-delay:0.3s,1.5s">✦</span>
+  <span class="sparkle sparkle--xs" style="top:92%;right:30%;--base-opacity:0.3;animation-delay:3.5s,4s">✦</span>
+
+  <!-- ✦ Estrelas jade -->
+  <span class="sparkle sparkle--jade sparkle--sm" style="top:12%;left:25%;--base-opacity:0.3;animation-delay:2s,3s">✦</span>
+  <span class="sparkle sparkle--jade sparkle--md" style="top:48%;left:12%;--base-opacity:0.25;animation-delay:4.2s,1.5s">✦</span>
+  <span class="sparkle sparkle--jade sparkle--sm" style="top:78%;right:25%;--base-opacity:0.3;animation-delay:1s,4s">✦</span>
+  <span class="sparkle sparkle--jade sparkle--xs" style="top:35%;right:22%;--base-opacity:0.2;animation-delay:3s,2.5s">✦</span>
+  <span class="sparkle sparkle--jade sparkle--md" style="top:65%;left:20%;--base-opacity:0.25;animation-delay:5.5s,0.5s">✦</span>
+  <span class="sparkle sparkle--jade sparkle--sm" style="top:88%;left:40%;--base-opacity:0.2;animation-delay:2.8s,3.8s">✦</span>
+
+  <!-- ● Pontos com glow -->
+  <span class="dot dot--gold" style="width:6px;height:6px;top:10%;left:14%;--base-opacity:0.6;animation-delay:1s,0s"></span>
+  <span class="dot dot--gold" style="width:4px;height:4px;top:28%;left:7%;--base-opacity:0.45;animation-delay:3s,2s"></span>
+  <span class="dot dot--gold" style="width:8px;height:8px;top:62%;left:10%;--base-opacity:0.5;animation-delay:0s,1s"></span>
+  <span class="dot dot--gold" style="width:3px;height:3px;top:85%;left:20%;--base-opacity:0.35;animation-delay:4s,3s"></span>
+  <span class="dot dot--gold" style="width:5px;height:5px;top:20%;right:15%;--base-opacity:0.5;animation-delay:2s,0.5s"></span>
+  <span class="dot dot--gold" style="width:7px;height:7px;top:50%;right:6%;--base-opacity:0.55;animation-delay:5s,1.5s"></span>
+  <span class="dot dot--gold" style="width:4px;height:4px;top:80%;right:12%;--base-opacity:0.4;animation-delay:1.5s,4s"></span>
+
+  <span class="dot dot--jade" style="width:5px;height:5px;top:35%;left:18%;--base-opacity:0.35;animation-delay:2.5s,1s"></span>
+  <span class="dot dot--jade" style="width:4px;height:4px;top:72%;right:20%;--base-opacity:0.3;animation-delay:0.5s,3.5s"></span>
+  <span class="dot dot--jade" style="width:6px;height:6px;top:15%;right:28%;--base-opacity:0.3;animation-delay:4.5s,2s"></span>
+
+  <span class="dot dot--warm" style="width:5px;height:5px;top:42%;left:22%;--base-opacity:0.3;animation-delay:3.2s,1.8s"></span>
+  <span class="dot dot--warm" style="width:4px;height:4px;top:68%;right:16%;--base-opacity:0.25;animation-delay:1.8s,4.2s"></span>
+  <span class="dot dot--warm" style="width:3px;height:3px;top:25%;right:8%;--base-opacity:0.3;animation-delay:5.5s,0.8s"></span>
+
+  <!-- ─ Linhas douradas decorativas -->
+  <span class="gold-line" style="width:120px;top:12%;left:2%;opacity:0.12"></span>
+  <span class="gold-line" style="width:80px;top:12%;left:2%;opacity:0.08;margin-top:4px"></span>
+  <span class="gold-line" style="width:180px;bottom:10%;right:0;opacity:0.1"></span>
+  <span class="gold-line" style="width:100px;bottom:10%;right:0;opacity:0.06;margin-bottom:-4px"></span>
+  <span class="gold-line" style="width:90px;top:50%;left:0;opacity:0.06"></span>
+  <span class="gold-line" style="width:70px;top:40%;right:0;opacity:0.07"></span>
+</div>
 
 <div class="card">
   <div class="floral-top">✦ ❀ ✦</div>
